@@ -12,7 +12,7 @@ const senha = '6645135';
 
 const scrapeLogic = async (res) => {
   const browser = await puppeteer.launch({
-    headless: 'new',
+    //headless: 'new',
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",
