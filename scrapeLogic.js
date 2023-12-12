@@ -10,6 +10,10 @@ require("dotenv").config();
 const login = '46714430078';
 const senha = '6645135';
 
+const proxy = 'e4e29c5041624c3b.na.pyproxy.io:16666';
+const username = 'djhenriqueee13-zone-resi';
+const password = 'djhenrique13';
+
 const scrapeLogic = async (res) => {
   const browser = await puppeteer.launch({
     //headless: 'new',
@@ -18,13 +22,19 @@ const scrapeLogic = async (res) => {
       "--no-sandbox",
       "--single-process",
       "--no-zygote",
+      `--proxy-server=http://${proxy}`,
+      '--proxy-auth=djhenriqueee13-zone-resi-region-br:djhenrique13'
     ],
-        executablePath: process.env.NODE_ENV === "production" ?
-          process.env.PUPPETEER_EXECUTABLE_PATH :
-          puppeteer.executablePath(),
+    executablePath: process.env.NODE_ENV === "production" ?
+      process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath(),
   });
   try {
     const page = await browser.newPage();
+
+    await page.authenticate({
+      username,
+      password
+    });
 
     // Set screen size
     await page.setViewport({
