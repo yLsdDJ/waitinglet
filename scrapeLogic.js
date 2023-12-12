@@ -19,9 +19,9 @@ const scrapeLogic = async (res) => {
       "--single-process",
       "--no-zygote",
     ],
-    executablePath: process.env.NODE_ENV === "production" ?
-      process.env.PUPPETEER_EXECUTABLE_PATH :
-      puppeteer.executablePath(),
+        executablePath: process.env.NODE_ENV === "production" ?
+          process.env.PUPPETEER_EXECUTABLE_PATH :
+          puppeteer.executablePath(),
   });
   try {
     const page = await browser.newPage();
@@ -33,34 +33,28 @@ const scrapeLogic = async (res) => {
     });
     await page.setUserAgent(randomUserAgent);
 
-    await page.goto('https://servicos.corsan.com.br/#/solicitacao/1/');
-
-    usernameXPATH = '//*[@id="27"]';
-    passwordXPATH = '//*[@id="26"]';
-
-    const usernameElement = await page.$x(usernameXPATH);
-    await usernameElement[0].click({
-      clickCount: 3
-    });
-    await usernameElement[0].type(login);
-
-    const passwordElement = await page.$x(passwordXPATH);
-    await passwordElement[0].click({
-      clickCount: 3
-    });
-    await passwordElement[0].type(senha);
-
-    await page.keyboard.press('Enter');
-
-    page.waitForXPath("/html/body/div[2]/div/div/div/div[1]/form", {
-      timeout: 6000
+    await page.goto('https://servicos.corsan.com.br/#/solicitacao/1/', {
+      waitUntil: "networkidle0"
     });
 
-    await page.waitForTimeout(3000);
+    const elements0 = await page.$x('/html/body/div[2]/div/div/div/div[1]/form/div[1]/div/div[1]/campos/div/input');
+    await elements0[0].click();
+    await elements0[0].type(login);
+
+    const elements1 = await page.$x('/html/body/div[2]/div/div/div/div[1]/form/div[1]/div/div[2]/campos/div/div/div[3]/input');
+    await elements1[0].click();
+    await elements1[0].type(senha);
+
+    const elements2 = await page.$x('/html/body/div[2]/div/div/div/div[1]/form/div[3]/button');
+    await elements2[0].click();
+
+    await sleep(6000);
 
     const text = await page.evaluate(async () => {
       return document.querySelector('#page-top > div.content-principal.ng-scope > div > div > div > div:nth-child(1) > form > div.row.mt20.ng-scope > div.ng-scope > div > table').textContent;
     });
+
+    //console.log(text);
 
     res.send(text);
   } catch (e) {
@@ -74,3 +68,9 @@ const scrapeLogic = async (res) => {
 module.exports = {
   scrapeLogic
 };
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
