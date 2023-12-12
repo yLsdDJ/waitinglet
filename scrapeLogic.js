@@ -10,9 +10,9 @@ require("dotenv").config();
 const login = '46714430078';
 const senha = '6645135';
 
-const proxy = 'e4e29c5041624c3b.na.pyproxy.io:16666';
-const username = 'djhenriqueee13-zone-resi';
-const password = 'djhenrique13';
+//const proxy = 'e4e29c5041624c3b.na.pyproxy.io:16666';
+//const username = 'djhenriqueee13-zone-resi';
+//const password = 'djhenrique13';
 
 const scrapeLogic = async (res) => {
   const browser = await puppeteer.launch({
@@ -22,8 +22,8 @@ const scrapeLogic = async (res) => {
       "--no-sandbox",
       "--single-process",
       "--no-zygote",
-      `--proxy-server=http://${proxy}`,
-      '--proxy-auth=djhenriqueee13-zone-resi-region-br:djhenrique13'
+      //`--proxy-server=http://${proxy}`,
+      //'--proxy-auth=djhenriqueee13-zone-resi-region-br:djhenrique13'
     ],
     executablePath: process.env.NODE_ENV === "production" ?
       process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath(),
@@ -31,10 +31,10 @@ const scrapeLogic = async (res) => {
   try {
     const page = await browser.newPage();
 
-    await page.authenticate({
-      username,
-      password
-    });
+    //await page.authenticate({
+    //  username,
+    //  password
+    //});
 
     // Set screen size
     await page.setViewport({
@@ -42,6 +42,21 @@ const scrapeLogic = async (res) => {
       height: 1024
     });
     await page.setUserAgent(randomUserAgent);
+
+    await page.setExtraHTTPHeaders({
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+      'Accept-Language': 'pt-BR,pt;q=0.9',
+      'Connection': 'keep-alive',
+      'Sec-Fetch-Dest': 'document',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Site': 'none',
+      'Sec-Fetch-User': '?1',
+      'Upgrade-Insecure-Requests': '1',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Sec-Ch-Ua': '\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Google Chrome\";v=\"120\"',
+      'Sec-Ch-Ua-Mobile': '?0',
+      'Sec-Ch-Ua-Platform': '\"Windows\"'
+    });
 
     await page.goto('https://servicos.corsan.com.br/#/solicitacao/1/', {
       waitUntil: "networkidle0"
