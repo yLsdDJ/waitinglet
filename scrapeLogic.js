@@ -1,5 +1,14 @@
 const puppeteer = require("puppeteer");
+
+const UserAgent = require('user-agents');
+const userAgent = new UserAgent({
+  deviceCategory: 'desktop'
+});
+const randomUserAgent = userAgent.toString();
 require("dotenv").config();
+
+const login = '46714430078';
+const senha = '6645135';
 
 const scrapeLogic = async (res) => {
   const browser = await puppeteer.launch({
@@ -23,6 +32,7 @@ const scrapeLogic = async (res) => {
 
     // Set screen size
     await page.setViewport({ width: 1080, height: 1024 });
+    await page.setUserAgent(randomUserAgent);
 
     usernameXPATH = '//*[@id="27"]';
     passwordXPATH = '//*[@id="26"]';
