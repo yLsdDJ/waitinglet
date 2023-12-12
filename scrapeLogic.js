@@ -17,29 +17,41 @@ const scrapeLogic = async (res) => {
   try {
     const page = await browser.newPage();
 
-    await page.goto("https://developer.chrome.com/");
+    await page.goto('https://servicos.corsan.com.br/#/solicitacao/1/', {
+      waitUntil: "networkidle0"
+    });
 
     // Set screen size
     await page.setViewport({ width: 1080, height: 1024 });
 
-    // Type into search box
-    await page.type(".search-box__input", "automate beyond recorder");
+    usernameXPATH = '//*[@id="27"]';
+    passwordXPATH = '//*[@id="26"]';
+  
+    const usernameElement = await page.$x(usernameXPATH);
+    await usernameElement[0].click({
+      clickCount: 3
+    });
+    await usernameElement[0].type(login);
+  
+    const passwordElement = await page.$x(passwordXPATH);
+    await passwordElement[0].click({
+      clickCount: 3
+    });
+    await passwordElement[0].type(senha);
+  
+    await page.keyboard.press('Enter');
+  
+    page.waitForXPath("/html/body/div[2]/div/div/div/div[1]/form", {
+      timeout: 6000
+    });
+  
+    await page.waitForTimeout(3000);
+  
+    const text = await page.evaluate(async () => {
+      return document.querySelector('#page-top > div.content-principal.ng-scope > div > div > div > div:nth-child(1) > form > div.row.mt20.ng-scope > div.ng-scope > div > table').textContent;
+    });
 
-    // Wait and click on first result
-    const searchResultSelector = ".search-box__link";
-    await page.waitForSelector(searchResultSelector);
-    await page.click(searchResultSelector);
-
-    // Locate the full title with a unique string
-    const textSelector = await page.waitForSelector(
-      "text/Customize and automate"
-    );
-    const fullTitle = await textSelector.evaluate((el) => el.textContent);
-
-    // Print the full title
-    const logStatement = `The title of this blog post is ${fullTitle}`;
-    console.log(logStatement);
-    res.send(logStatement);
+    res.send(text);
   } catch (e) {
     console.error(e);
     res.send(`Something went wrong while running Puppeteer: ${e}`);
